@@ -7,13 +7,20 @@ const yargs = require('yargs');
 const notes = require('./notes.js');
 
 const argv = yargs.argv;
-var command = process.argv[2];
+var command = argv._[0];
 console.log(`Command: ${command}`);
 console.log('Yargs: ',argv);
 
 if(command === 'add') {
-    console.log('Adding new note');
-    notes.addNote(argv.title, argv.body);
+    var note = notes.addNote(argv.title, argv.body);
+    if(note) {
+        console.log('Note created');
+        console.log('---');
+        console.log(`Title: ${note.title}`);
+        console.log(`Body: ${note.body}`);
+    } else {
+        console.log('Note title taken');
+    }
 } else if (command === 'list') {
     console.log('Listing all notes');
     notes.getAll();
@@ -21,8 +28,9 @@ if(command === 'add') {
     console.log('Reading notes');
     notes.getNote(argv.title);
 } else if (command === 'remove') {
-    console.log('Removing note')
-    notes.removeNote(argv.title);
+    var noteRemoved = notes.removeNote(argv.title);
+    var message = (noteRemoved) ? 'Note was removed' : 'Note not found';
+    console.log(message);
 } else {
-    console.log('Common not recognized');
+    console.log('Command not recognized');
 }
